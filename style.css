@@ -1,18 +1,36 @@
-#map    { position: relative; min-height: 500px; }
+#map { position: relative; min-height: 500px; }
 
-.state path { stroke: #a9a9a9; stroke-width: 1px; }
-
-.state:hover path { fill-opacity: .7; }
-
-.label {
-        fill: #3a003a;
-        font-size: 12px;
-        font-weight: 300;
-        text-anchor: middle;
-        pointer-events: none; 
+/* State Boundary Paths*/
+.state path {
+    stroke: black;
+    stroke-width: 1px;
 }
+.unselected path {
+    fill: rgb(128, 128, 128);
+    fill-opacity: 0.1;
+}   
+.unselected:hover path { fill-opacity: 0.3; }
+.selected path {
+    fill: rgb(128, 128, 128);
+    fill-opacity: 0.7;
+}
+.selected:hover path { fill-opacity: 0.9; }
 
+/*State Labels*/
+.state text {
+    fill: #3a003a;
+    font-size: 12px;
+    font-weight: 300;
+    text-anchor: middle;
+    pointer-events: none;
+}
+.unselected text { visibility: hidden; }
+.unselected:hover text { visibility: visible; }
+.selected text { visibility: visible; }
+
+
+/*
 .label.IND-2427 { font-size: 0; }
 .label.IND-2445 { font-size: 0; }
 .label.IND-3262 { font-size: 0; }
-.label.IND-3504 { font-size: 0; }
+.label.IND-3504 { font-size: 0; }*/
