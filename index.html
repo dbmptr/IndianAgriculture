@@ -3,20 +3,46 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <title>Indian Agriculture</title>
 </head>
 <body>
-    <div id="demobox">
+    <div class="dashboard">
         <div id="map">
+            <h1>Which states produced 
+                <span class='crop_menu'>
+                    <select></select>
+                    ?
+                </span>
+            </h1>
+            <div id="map_info">
+                <p>
+                    <span id="state_count"></span> states/union territories produced </br> <span id="crop_name"></span>.
+                </p>
+                <p>
+                    Click on state(s) to see how the yield grew.
+                </p>
+
+            </div>
+        </div>
+        <div id="yield">
+            <h1>How did the yield grow over the years?</h1>
+        </div>
+        <!-- <div id="season">
+            <h1>Some more Vis</h1>
+        </div> -->
+        <div id="copyright">
+            &copy; 2020 Debabrata Mahapatra
         </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="https://d3js.org/d3-selection-multi.v0.4.min.js"></script>
     <script src="https://d3js.org/topojson.v1.min.js"></script>
 
-    <!-- <script src="stateMap.js"></script> -->
     <script src="map.js"></script>
+    <script src="csp.js"></script>
+    <script src="buildDashboard.js"></script>
 </body>
 </html>

@@ -1,36 +1,148 @@
-#map { position: relative; min-height: 500px; }
+/*--------Dashboard Styling---------------*/
+    div.dashboard {
+        /*width: 99vw;
+        height: 99vh;*/
+    }
 
-/* State Boundary Paths*/
-.state path {
-    stroke: black;
-    stroke-width: 1px;
-}
-.unselected path {
-    fill: rgb(128, 128, 128);
-    fill-opacity: 0.1;
-}   
-.unselected:hover path { fill-opacity: 0.3; }
-.selected path {
-    fill: rgb(128, 128, 128);
-    fill-opacity: 0.7;
-}
-.selected:hover path { fill-opacity: 0.9; }
+    div#map { 
+        position: absolute; 
+        width: 49vw; 
+        height: 93vh ;
+        outline: 1px solid black;
+    }
 
-/*State Labels*/
-.state text {
-    fill: #3a003a;
-    font-size: 12px;
-    font-weight: 300;
-    text-anchor: middle;
-    pointer-events: none;
-}
-.unselected text { visibility: hidden; }
-.unselected:hover text { visibility: visible; }
-.selected text { visibility: visible; }
+    div#copyright {
+        position: absolute;
+        bottom: 2vh;
+    }
 
+    div#yield {
+        position: absolute;
+        width: 49vw; 
+        height: 50vh;
+        left: 50vw;
+        /*top: -80vh;*/
+        outline: 1px solid black;
+    }
 
-/*
-.label.IND-2427 { font-size: 0; }
-.label.IND-2445 { font-size: 0; }
-.label.IND-3262 { font-size: 0; }
-.label.IND-3504 { font-size: 0; }*/
+    div#season {
+        position: absolute;
+        width: 49vw; 
+        height: 48vh;
+        left: 50vw;
+        top: 51vh;
+        outline: 1px solid black;
+    }
+
+/*--------HTML Text Styling--------------*/
+    h1 {
+        margin: 0;
+        font-size: 2vw;
+        font-family: serif;
+    }
+
+    div#map_info {
+        position: absolute;
+        left: 22vw;
+        top: 10vh;
+        visibility: hidden;
+    }
+
+    .crop_menu select {
+        padding: .5vh 2vw .5vh .5vw;
+        /*width: 20vw;*/
+        max-width: 25vw;
+        font-size: 1.5vw;
+        font-weight: bold;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    .crop_menu::after {
+        content: '\25BC';
+        position: relative;
+        left: -3.5vw;
+        font-size: 1vw;
+        color: rgba(100, 100, 100, 0.5);
+        pointer-events: none;
+    }
+
+    .crop_menu:hover::after {
+        color: rgba(50, 50, 50, 1);
+    }
+
+/*--------Map Styling---------------------*/
+    /* State Boundary Paths*/
+    .state path {
+        stroke: black;
+        stroke-width: 1px;
+        fill: rgb(128, 128, 128);
+        fill-opacity: 0.1;
+    }
+    .state:hover path { fill-opacity: 0.3; }
+    .selected path {
+        fill: rgb(128, 128, 128);
+        fill-opacity: 0.7;
+    }
+    .selected:hover path { fill-opacity: 0.9; }
+
+    /*State Labels*/
+    .state text {
+        fill: #3a003a;
+        font-size: 12px;
+        font-weight: 300;
+        text-anchor: middle;
+        pointer-events: none;
+        visibility: hidden; 
+    }
+    .state:hover text { visibility: visible; }
+    .selected text { visibility: visible; }
+
+/*--------Yeild Styling----------*/
+    /*Brushing*/
+    .csls:hover > .csl {
+        opacity: 0.3;
+    }
+    .csls:hover > .csl:hover {
+        opacity: 1;
+    }
+    .csl {
+        opacity: 0.7;
+    }
+
+    .csl path {      /*Connected Scatter line */
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+    }
+
+    .csl circle {
+        fill: none;
+        stroke-width: 2;
+    }
+
+    .csl circle:hover {
+        fill: white;
+        fill-opacity: 0;
+        stroke-width: 4;
+    }
+
+    .toolTip {
+        position: absolute;
+        opacity: 0;
+        background: white;
+        border: 1px solid black ;
+        border-radius: 5px 5px 5px 5px;
+        pointer-events: none;
+    }
+
+    .toolTip p {
+        margin: 1px 10px 1px 10px;
+    }
+
+    .toolTip #title {
+        margin: 2px 2px 2px 5px;
+    }
+/*--------Season Styling----------

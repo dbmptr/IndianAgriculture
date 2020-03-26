@@ -1,16 +1,18 @@
 class GeoMap {
 
     constructor(svg) {
-        let self = this
+        let self = this;
         // Responsive design
         self.width = $(svg.node()).width();
         self.height = $(svg.node()).height();
+
+        // For Projection
         self.scale = 500;
         self.center = [0, 0];
 
         // Separate container for drawing
         self.svg = svg;
-        self.chart = svg.append('g');
+        self.chart = svg.append('g');   // Better zoom and pan with separate chart
 
         // Zoom and Pan
         svg.call(d3.zoom().on('zoom', function(){
@@ -19,7 +21,6 @@ class GeoMap {
             );
 
         self.data = null;       // Data pointer
-        self.scale = scale;     // For Projection
         self.entities = null;   // Each entity has a boundary
         self.path = null;       // Path generator for entity boundaries
     }
@@ -37,10 +38,12 @@ class GeoMap {
             tmp = i.toString(base).split("").reverse().join("");
             h = 360 * parseInt(tmp, base) / Math.pow(base, tmp.length);
             l = lMin + (lMax - lMin) * (1 - Math.exp(-i/lDecay));
+            let color = d3.hsl(h, s, l).toString();
             sheet.innerHTML += `\
                 .state-${d.id} path { \
-                    fill: ${d3.hsl(h, s, l).toString()}; \
+                    fill: ${color}; \
                 } `
+            d.properties.color = color;
         })
         document.body.appendChild(sheet);
 
@@ -72,26 +75,3 @@ class GeoMap {
             .text(function(d) { return d.properties.name; });
     }
 }
-
-let width  = 800, height = 700, scale = 1200;
-svg = d3.select("#map").append('svg')
-        .attr("width", width)
-        .attr("height", height);
-var map = new GeoMap(svg);
-map.center = [83, 23];
-map.scale = scale;
-
-d3.queue()
-    .defer(d3.json, "ne_10m_admin_1_India_Official.json")
-    .await(function(error, topoMap) {
-        if (error) throw error;
-        var states = topojson.feature(topoMap, topoMap.objects.ne_10m_admin_1_India_Official);
-        map.addData(states.features);
-        map.entities.attr('class', (d,i) => (i%2 == 0) ? 'state selected': 'state unselected');
-        map.entities.on('click', function(d) {
-            let self = d3.select(this);
-            if (self.classed("selected")) {
-                self.classed(`state-${d.id}`, !self.classed(`state-${d.id}`));
-            }
-        })
-    });
