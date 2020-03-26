@@ -1,13 +1,13 @@
-class ConnectedScatterPlot {
-    constructor(svg, labels = null, units=null) {
+class LinePlot {
+    constructor(svg, labels=null, units=null) {
         let self = this;
 
-        if (!labels) labels = {'x': 'x', 'y': 'y', 't': 't'};
-        if (!units) units = {'x': '', 'y': '', 't': ''};
+        if (!labels) labels = {'x': 'x', 'y': 'y'};
+        if (!units) units = {'x': '', 'y': ''};
 
         // Set chart margin, height and width
         let w = $(svg.node()).width(), h = $(svg.node()).height();
-        let margin = {'top':.05*h, 'bottom':.1*h, 
+        let margin = {'top':.1*h, 'bottom':.1*h, 
                       'right': .05*w, 'left': .1*w};
         self.width = w - margin.left - margin.right;    // Chart width
         self.height = h - margin.top - margin.bottom;   // Chart height
@@ -16,14 +16,12 @@ class ConnectedScatterPlot {
         self.svg = svg;
         self.chart = svg.append('g')
             .attr('transform', `translate(${margin.left}, ${margin.top})`);
-        self.lines = self.chart.append('g')   // container for all lines
+        self.lines = self.chart.append('g')   // container for all paths
             .attr('class', 'csls');
 
         // Set scales
         self.x = d3.scaleLinear().domain([0, 100]).range([0, self.width]);
         self.y = d3.scaleLinear().domain([0, 100]).range([self.height, 0]);
-        self.t = d3.scaleSqrt().domain([0, 100])
-                    .range([0.005*self.width, 0.03*self.width]);
 
         // Set x axis
         self.xAxis = d3.axisBottom(self.x);
@@ -38,7 +36,7 @@ class ConnectedScatterPlot {
 
         // Set axis labels
         self.xlabel = self.chart.append("text")
-            .attr('transform', `translate(${self.width-5}, ${self.height-5})`)
+            .attr('transform', `translate(${self.width+5}, ${self.height-5})`)
             .attr('text-anchor', 'end')
             .text(labels.x);
         self.ylabel = self.chart.append('text')
@@ -56,7 +54,7 @@ class ConnectedScatterPlot {
         self.toolTip = d3.select('body').append('div')
             .attr('class', 'toolTip');
         self.toolTip.append('h3').attr('id', 'title');
-        for (let l of ['y', 'x', 't']) {
+        for (let l of ['y', 'x']) {
             let tip = `${labels[l]}: <span id=${l}></span> ` + units[l];
             self.toolTip.append('p').html(tip);
         }
@@ -65,7 +63,7 @@ class ConnectedScatterPlot {
         self.data = {};
     }
 
-    updateScale(domains = null) {
+    updateScale(domains) {
         let self = this;
         if (domains) {
             for (let dim of Object.keys(domains)) {
@@ -90,9 +88,7 @@ class ConnectedScatterPlot {
                 csl.selectAll('circle')
                     .transition().duration(300)
                     .attr("cx", d => self.x(d.x))
-                    .attr("cy", d => self.y(d.y))
-                    .attr("r", d => self.t(d.t));
-
+                    .attr("cy", d => self.y(d.y));
             })
     }
 
@@ -110,7 +106,7 @@ class ConnectedScatterPlot {
         delete this.data[id];
     }
 
-    addData(data, attr={'id': null, 'color': 'black', 'title': ''}) {
+    addData(data, attr={}) {
         let self = this;
         self.nlines ++;     // Increase the count of number of paths
         if (!attr.id) attr.id = self.nlines;
@@ -121,12 +117,12 @@ class ConnectedScatterPlot {
 
         // set scale
         let d_doms = {}
-        for (let dim of ['x', 'y', 't']) {
+        for (let dim of ['x', 'y']) {
             d_doms[dim] = d3.extent(data, d => d[dim]);   // Data domain
         }
         let domains = {}
         if (self.nlines > 1) {
-            for (let dim of ['x', 'y', 't']) {
+            for (let dim of ['x', 'y']) {
             let c_dom = self[dim].domain();             // Current domain
             domains[dim] = [Math.min(d_doms[dim][0], c_dom[0]),
                             Math.max(d_doms[dim][1], c_dom[1])];
@@ -135,7 +131,7 @@ class ConnectedScatterPlot {
         else domains = d_doms;
         self.updateScale(domains)
 
-        // Create a Connected Scatter Line container
+        // Container for this Line
         let g = self.lines.append('g')
             .attr('id', attr.id).attr('class', 'csl');
 
@@ -145,12 +141,13 @@ class ConnectedScatterPlot {
                     .attr("stroke", attr.color)
                     .attr("d", self.lineGen);
 
+        // Animate the from start to end
         if (attr.animtime > 0) {
             const l = path.node().getTotalLength()
             path.attr("stroke-dasharray", `0,${l}`)
-                .transition().duration(attr.animtime)
-                .ease(d3.easeLinear)
-                .attr("stroke-dasharray", `${l},${0}`);
+            .transition().duration(attr.animtime)
+            .ease(d3.easeLinear)
+            .attr("stroke-dasharray", `${l},${0}`);
         }
         
 
@@ -160,11 +157,11 @@ class ConnectedScatterPlot {
             .attr("stroke", attr.color)
             .attr("cx", d => self.x(d.x))
             .attr("cy", d => self.y(d.y))
-            .attr("r", d => self.t(d.t))
+            .attr("r", d => 2)
             .on('mouseover', function(d) {
                 self.toolTip.select('#title').text(attr.title);
-                for (let label of ['y', 'x', 't']) {
-                    self.toolTip.select('#'+label).text(d[label]);
+                for (let label of ['y', 'x']) {
+                    self.toolTip.select('#'+label).text(d[label].toFixed(2));
                 }
                 let offset = $(this).offset()
                 let w = $(self.toolTip.node()).width(),

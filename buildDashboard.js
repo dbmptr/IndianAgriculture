@@ -5,8 +5,15 @@ map.scale = (map.width*1.4 > map.height) ? 1.5 * map.height : map.width * 2;
 
 // Drawing object for crop yield growth
 let labels = {'x': 'Area', 'y': 'Production', 't': 'Year'};
-let units = {'x': 'sq mt', 'y': 'units', 't': ''};
-var yieldgrowth = new ConnectedScatterPlot(getSVG('#yield'), labels, units);
+let units = {'x': 'sq.mt', 'y': 'units', 't': ''};
+var yieldgrowth = new ConnectedScatterPlot(getSVG('#yieldcsl'), labels, units);
+for (let ax of ['xAxis', 'yAxis']) yieldgrowth[ax].ticks(10, 's');
+
+// Drawing object for production vs. area
+labels = {'x': 'Year', 'y': 'Yield'}
+units = {'x': '', 'y': 'units per sq.mt'};
+var yieldline = new LinePlot(getSVG('#yieldline'), labels, units);
+yieldline.xAxis.ticks(10, '');
 
 function getSVG(containerID) {
     let width = $(containerID).width(),
@@ -36,7 +43,10 @@ function buildDashboard(error, topoMap, agroData) {
             if (self.classed(`state-${d.id}`)) {
                 showYield(d.properties.name, d.id, d.properties.color);   
             }
-            else yieldgrowth.remove(d.id);
+            else {
+                yieldgrowth.remove(d.id);
+                yieldline.remove(d.id);
+            }
         }
     })
     let map_info = d3.select('#map_info');
@@ -64,13 +74,14 @@ function buildDashboard(error, topoMap, agroData) {
 
         // Clear yield chart
         yieldgrowth.reset()
+        yieldline.reset()
 
         // update map_info
         map_info.style('visibility', 'visible');
         map_info.select('#state_count').text(cropStatesData.length);
         map_info.select('#crop_name').text(crop_name);
 
-        var n_selected = 0;
+        let n_selected = 0;
         map.entities.attr('class', 'state');
         map.entities.classed('selected', function (d) {
             if (cropStatesName.includes(d.properties.name)) {
@@ -91,14 +102,26 @@ function buildDashboard(error, topoMap, agroData) {
                                 .values;
         let cropStateYearsData = d3.nest().key(d => d.Crop_Year)
                                     .entries(cropStateData);
-        let lineChartData = cropStateYearsData.map(function (yearData) {
+
+        // Data for Connected Scatter Plot
+        let cslChartData = cropStateYearsData.map(function (yearData) {
                 return {'t': +yearData.key, 
                         'x': d3.sum(yearData.values, d => d.Area), 
                         'y': d3.sum(yearData.values, d => d.Production)}
                 })
                 .sort((d1, d2) => d3.ascending(d1.t, d2.t));
 
-        yieldgrowth.addData(lineChartData, {'id': id, 'color': color, 'title': stateName});
+
+        let [tmin, tmax] = d3.extent(cslChartData, d => d.t);
+        let time = (tmax - tmin) * 500 * 10**-Math.floor(Math.log10(tmax - tmin));
+        let attr = {'id': id, 'color': color, 'title': stateName, 'animtime': time};
+        yieldgrowth.addData(cslChartData, attr);
+
+        // Data for Line Chart
+        let lineChartData = cslChartData.map(function(d) { 
+            return {'x': d.t, 'y': d.y / d.x};
+        })
+        yieldline.addData(lineChartData, attr);
     }
 
     // Set up the Season chart

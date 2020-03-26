@@ -7,31 +7,36 @@
     div#map { 
         position: absolute; 
         width: 49vw; 
-        height: 93vh ;
+        height: 91vh ;
         outline: 1px solid black;
     }
 
-    div#copyright {
+    div#yieldline {
         position: absolute;
-        bottom: 2vh;
+        width: 49vw; 
+        height: 40vh;
+        left: 50vw;
+        outline: 1px solid black;
     }
 
-    div#yield {
+    div#yieldcsl {
         position: absolute;
         width: 49vw; 
         height: 50vh;
         left: 50vw;
-        /*top: -80vh;*/
+        top: 42vh;
         outline: 1px solid black;
     }
-
-    div#season {
+    
+    div#datasource {
         position: absolute;
-        width: 49vw; 
-        height: 48vh;
-        left: 50vw;
-        top: 51vh;
-        outline: 1px solid black;
+        bottom: 2vh;
+    }
+    div#copyright {
+        position: absolute;
+        text-align: end;
+        bottom: 2vh;
+        left: 75vw;
     }
 
 /*--------HTML Text Styling--------------*/
@@ -39,6 +44,7 @@
         margin: 0;
         font-size: 2vw;
         font-family: serif;
+        text-align: center;
     }
 
     div#map_info {
@@ -99,7 +105,7 @@
     .state:hover text { visibility: visible; }
     .selected text { visibility: visible; }
 
-/*--------Yeild Styling----------*/
+/*--------Yeild CSL Styling----------*/
     /*Brushing*/
     .csls:hover > .csl {
         opacity: 0.3;
@@ -145,4 +151,6 @@
     .toolTip #title {
         margin: 2px 2px 2px 5px;
     }
-/*--------Season Styling----------
+
+/*-------- Yield Line Styling---------- */
+    

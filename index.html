@@ -21,19 +21,23 @@
                     <span id="state_count"></span> states/union territories produced </br> <span id="crop_name"></span>.
                 </p>
                 <p>
-                    Click on state(s) to see how the yield grew.
+                    Click on state(s) to see <b>Yield</b> growth. </br>
+                    Yield = Production per unit Area.
                 </p>
 
             </div>
         </div>
-        <div id="yield">
-            <h1>How did the yield grow over the years?</h1>
+        <div id="yieldcsl">
+            <h1>Production vs. Area: Connected Scatter Plot</h1>
         </div>
-        <!-- <div id="season">
-            <h1>Some more Vis</h1>
-        </div> -->
+        <div id="yieldline">
+            <h1>How did the Yield grow over the years?</h1>
+        </div>
         <div id="copyright">
             &copy; 2020 Debabrata Mahapatra
+        </div>
+        <div id="datasource"> Datasource:
+            <a href="https://data.gov.in/catalog/district-wise-season-wise-crop-production-statistics?filters%5Bfield_catalog_reference%5D=87631&format=json&offset=0&limit=6&sort%5Bcreated%5D=desc" target="_blank">Government of India Open Data</a> 
         </div>
     </div>
 
@@ -43,6 +47,8 @@
 
     <script src="map.js"></script>
     <script src="csp.js"></script>
+    <script src="line.js"></script>
     <script src="buildDashboard.js"></script>
 </body>
 </html>
+
