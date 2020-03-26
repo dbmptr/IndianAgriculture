@@ -20,7 +20,7 @@ class LinePlot {
             .attr('class', 'csls');
 
         // Set scales
-        self.x = d3.scaleLinear().domain([0, 100]).range([0, self.width]);
+        self.x = d3.scaleLinear().domain([2000, 2010]).range([0, self.width]);
         self.y = d3.scaleLinear().domain([0, 100]).range([self.height, 0]);
 
         // Set x axis

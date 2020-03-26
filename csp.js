@@ -46,6 +46,15 @@ class ConnectedScatterPlot {
             .attr('text-anchor', 'start')
             .text(labels.y);
 
+        self.tlegend = self.chart.append('g')
+            .attr('transform', `translate(${self.width/2}, ${10})`);
+        self.tlegend.append('text').attr('id', 'tmin')
+            .attr('x', -1).attr('y', 5)
+            .attr('text-anchor', 'end');
+        self.tlegend.append('text').attr('id', 'tmax')
+            .attr('x', self.width/5 + 5).attr('y', 5)
+            .attr('text-anchor', 'start');
+
 
         self.lineGen = d3.line()           // Line generator
             .curve(d3.curveCatmullRom)
@@ -71,6 +80,25 @@ class ConnectedScatterPlot {
             for (let dim of Object.keys(domains)) {
                 self[dim].domain(domains[dim]);
             }
+
+            // self.tlegend.selectAll('circle').remove();
+            let [tmin, tmax] = self.t.domain();
+            let legdata = d3.range(5).map(i => self.t( tmin + (tmax - tmin) * i / 4) );
+
+            self.tlegend.selectAll('circle')
+                .data(legdata).enter().append('circle')
+                .transition().duration(300)
+                    .attr("cx", (d, i) => 2 * d3.sum(legdata.slice(0, i+1)))
+                    .attr("cy", d => 0)
+                    .attr("r", d => d)
+                    .attr('class', 'legcircle');
+            self.tlegend.select('#tmin').text(tmin);
+            self.tlegend.select('#tmax').text(tmax);
+            // self.tlegend.selectAll('text')
+            //     .data([tmin, tmax]).enter().append('text')
+            //     .transition().duration(300)
+            //         .attr('x', (d, i) => (i==0) ? 0 : self.width/16)
+            //         .attr('text-anchor', (d, i) => (i==0) ? 'end' : 'start');
         }
 
         // update axis
@@ -93,7 +121,7 @@ class ConnectedScatterPlot {
                     .attr("cy", d => self.y(d.y))
                     .attr("r", d => self.t(d.t));
 
-            })
+            });
     }
 
     reset() {
@@ -101,6 +129,8 @@ class ConnectedScatterPlot {
         self.chart.selectAll('g.csl').remove();       // All the circles
         self.nlines = 0;
         self.data = {};
+        self.tlegend.selectAll('circle').remove();
+        self.tlegend.selectAll('text').text('')
     }
 
     remove(id) {

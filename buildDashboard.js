@@ -8,12 +8,14 @@ let labels = {'x': 'Area', 'y': 'Production', 't': 'Year'};
 let units = {'x': 'sq.mt', 'y': 'units', 't': ''};
 var yieldgrowth = new ConnectedScatterPlot(getSVG('#yieldcsl'), labels, units);
 for (let ax of ['xAxis', 'yAxis']) yieldgrowth[ax].ticks(10, 's');
+yieldgrowth.updateScale();
 
 // Drawing object for production vs. area
 labels = {'x': 'Year', 'y': 'Yield'}
 units = {'x': '', 'y': 'units per sq.mt'};
 var yieldline = new LinePlot(getSVG('#yieldline'), labels, units);
 yieldline.xAxis.ticks(10, '');
+yieldline.updateScale();
 
 function getSVG(containerID) {
     let width = $(containerID).width(),
